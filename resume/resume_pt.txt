@@ -1,0 +1,169 @@
+
+Mirantes
+
+1- docker container --help - obter ajuda relacionada aos container
+2- docker container ls - listar containers em execu«®«ªo
+3- docker container pull image_name 
+4- docker container rm container_name_or_id ( os primeiros 3 digitos do id funcionam) add -f flat to force delete
+
+5-docker image rm d2c - eliminar uma imagem
+6-docker image ls
+
+
+
+exemplo 1:
+
+como baixar a imagem postgres
+
+docker container pull postgres (ny defaul baixa latast version)
+
+rodar
+
+docker container run --name postgres-alpha -dp 5432:5432 -e POSTGRES_PASSWORD=secret postgres
+
+exemplo 2:
+
+baixando imagem maria db com meus proprios dados inicias
+
+docker container run -dp 3307:3306 --name world-db --env MARIADB_USER=root --env MARIADB_PASSWORD=root --env MARIADB_ROOT_PASSWORD=root --env MARIADB_DATABASE=world-db mariadb:jammy
+
+** Volumes - v«ªo permitir manter meus dados quando eliminar o container
+
+** Tipo de volumes
+
+*Named Volumes
+Este «± o mais usado
+
+*Bind Volumes 
+Trabalaha com caminhos absolutos
+
+*Anonymous Volumes
+Da um nome unico ao volume
+
+********Criando um volume
+
+docker volume create world-db
+
+exercicio 1
+
+docker container run \
+-dp 3307:3306 --name world-db \
+--env MARIADB_USER=root \
+--env MARIADB_PASSWORD=root \
+--env MARIADB_ROOT_PASSWORD=root \
+--env MARIADB_DATABASE=world-db \
+--volume world-db:/var/lib/mysql \
+mariadb:jammy
+
+
+
+docker container run --name phpmyadmin -d -e PMA_ARBITRARY=1 -p 8080:80 phpmyadmin:5.2.0-apache
+
+*********
+network serve para conectar container na mesma rede.
+
+
+exercicio
+
+docker create network create world-app
+
+***conectando containers
+
+docker network connect world-app id_container
+
+docker network inspect world-app
+
+
+exercicio 2
+
+criando container com uma rede
+
+docker container run \
+-dp 3307:3306 --name world-db \
+--env MARIADB_USER=root \
+--env MARIADB_PASSWORD=root \
+--env MARIADB_ROOT_PASSWORD=root \
+--env MARIADB_DATABASE=world-db \
+--volume world-db:/var/lib/mysql \
+--netowrk world-app \
+
+mariadb:jammy
+
+*Bind Volumes
+
+
+docker container run \
+--name nest-app \
+-w /app \
+-p 80:3000 \
+-v "$(pwd)":/app \
+node:16-alpine3.16 \
+sh -c "yarn install && yarn start:dev"
+
+
+
+***********docker compose
+
+Permite construir rapido containers que executam uma aplicação
+
+
+
+installl pg postgres
+
+docker container run \
+-d \
+--name postgres-db \
+-e POSTGRES_PASSWORD=123456 \
+-v postgres-db:/var/lib/postgresql/data \
+postgres:15.1
+
+installl pg admin
+
+docker container run \
+--name pgAdmin \
+-e PGADMIN_DEFAULT_PASSWORD=123456 \
+-e PGADMIN_DEFAULT_EMAIL=superman@google.com \
+-dp 8080:80 \
+dpage/pgadmin4:6.17
+
+
+
+****Docker compose
+
+exemple de um script
+
+version: "3"
+
+services:
+  db:
+    container_name: postgres_database
+    image: postgres:15.1
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=123456
+
+  pgAdmin:
+    depends_on:
+      - db
+    image: dpage/pgadmin4:6.17
+    ports:
+      - "8080:80"
+    environment:
+      - PGADMIN_DEFAULT_PASSWORD=123456
+      - PGADMIN_DEFAULT_EMAIL=superman@google.com
+
+volumes:
+  postgres-db:
+    external: true
+
+
+
+
+rodar:
+
+docker compose up
+
+
+
+
