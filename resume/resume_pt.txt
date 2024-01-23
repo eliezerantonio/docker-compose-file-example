@@ -1,5 +1,4 @@
 
-Mirantes
 
 1- docker container --help - obter ajuda relacionada aos container
 2- docker container ls - listar containers em execu«®«ªo
@@ -163,6 +162,10 @@ volumes:
 rodar:
 
 docker compose up
+
+matar:
+
+docker compose down
 
 
 
