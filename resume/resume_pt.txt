@@ -168,5 +168,57 @@ matar:
 docker compose down
 
 
+*** Docker File
 
 
+
+
+
+exemplo basico:
+
+# /app /usr/lib
+FROM node:19.2-alpine3.16
+
+#cd app
+WORKDIR /app
+
+#Dest /app
+COPY app.js package.json ./
+
+# install dependencies
+RUN npm install
+
+# Comand what run the image
+CMD [ "node", "app.js" ]
+ 
+
+rodar: 
+
+docker build --tag cron-ticker .
+
+
+comando para fazer push e subir no docker hub
+
+
+primero passo é renomar
+
+
+1-docker image tag cron-ticker eliezerantonio/cron-ticker
+
+
+2- docker push eliezerantonio/cron-ticker:tagname
+
+
+
+Comando para explorar um container
+
+docker exec -it 9d7 /bin/sh
+
+
+about buildx
+
+https://docs.docker.com/build/building/multi-platform/#getting-started
+
+
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8 \
+-t eliezerantonio/cron-ticker:latest --push .
