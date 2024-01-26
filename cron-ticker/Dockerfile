@@ -1,27 +1,27 @@
-# /app /usr/lib
-# FROM  node:19.2-alpine3.16
-# FROM --platform=linux/arm64 node:19.2-alpine3.16
-FROM --platform=$BUILDPLATFORM node:19.2-alpine3.16
-
-#cd app
+# Dev dependencies
+FROM  node:19.2-alpine3.16 as deps
 WORKDIR /app
-
-#Dest /app
 COPY package.json ./
-
-# install dependencies
 RUN npm install
 
-COPY . ./
-
-# execute tests
-
+#Build & Tests
+FROM  node:19.2-alpine3.16 as builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 RUN npm run test
 
-# delete unecessary archives
+#Prod Dependencies
 
-RUN rm -rf tests && rm -rf node_modules
-
+FROM  node:19.2-alpine3.16 as prod-deps
+WORKDIR /app
+COPY  package.json ./
 RUN npm install --prod
-# Comand what run the image
+
+#Execute App
+FROM  node:19.2-alpine3.16 as runner
+WORKDIR /app
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY app.js ./
+COPY tasks/ .tasks 
 CMD [ "node", "app.js" ]

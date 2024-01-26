@@ -222,3 +222,12 @@ https://docs.docker.com/build/building/multi-platform/#getting-started
 
 docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8 \
 -t eliezerantonio/cron-ticker:latest --push .
+
+
+
+
+mult-stage
+
+
+
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 \ -t eliezerantonio/cron-ticker:latest --push .
