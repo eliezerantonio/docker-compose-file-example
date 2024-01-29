@@ -231,3 +231,6 @@ mult-stage
 
 
 docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 \ -t eliezerantonio/cron-ticker:latest --push .
+
+
+pipile- processos executados em sequencia até chegar em objectivo particular
